@@ -4,40 +4,18 @@
 <div id="hd"></div>
 <div class="wrap"><h1 style="font-size:22px;margin-bottom:8px">Your bag</h1><div id="ct"></div></div>
 <div id="ft"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="config.js"></script>
 <script src="app.js"></script>
-<script>
+<script>ready.then(()=>{
 function draw(){const c=rd();
 if(!c.length){$("#ct").innerHTML='<p>Your bag is empty.</p><p><a class="btn" href="collection.html?c=all">Start shopping</a></p>';return}
 let t=0;
-$("#ct").innerHTML=c.map((i,x)=>{const p=P.find(y=>y.id==i.id);t+=p.p*i.q;return `<div class="row">${img(p)}<div><b>${p.n}</b><br>Size ${i.s} · ${money(p.p)}<div class="q" data-i="${x}"><button data-d="-1">−</button> ${i.q} <button data-d="1">+</button></div></div><button class="lnk" data-r="${x}">Remove</button></div>`}).join("")+`<p class="tot">Total ${money(t)}</p><button class="btn" id="co">Checkout</button><p class="mut" id="cm"></p>`;
+$("#ct").innerHTML=c.map((i,x)=>{const p=P.find(y=>y.id==i.id)||{n:"Unavailable item",p:0,k:"#ddd"};t+=p.p*i.q;return `<div class="row">${img(p)}<div><b>${p.n}</b><br>Size ${i.s} · ${money(p.p)}<div class="q" data-i="${x}"><button data-d="-1">−</button> ${i.q} <button data-d="1">+</button></div></div><button class="lnk" data-r="${x}">Remove</button></div>`}).join("")+`<p class="tot">Total ${money(t)}</p><button class="btn" id="co">Checkout</button><p class="mut" id="cm"></p>`;
 $("#co").onclick=()=>$("#cm").textContent="Checkout will be connected to Razorpay in a later step."}
 $("#ct").onclick=e=>{const b=e.target,c=rd();
 if(b.dataset.d){const x=b.parentNode.dataset.i;c[x].q+=+b.dataset.d;if(c[x].q<1)c.splice(x,1)}
 else if(b.dataset.r){c.splice(b.dataset.r,1)}else return;
 wr(c);head();draw()};
 draw();
-</script>
+});</script>
 </body></html>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBa8pF742T-Xb3yMBnfsZd7LrT319SdowQ",
-    authDomain: "mystore-c7683.firebaseapp.com",
-    projectId: "mystore-c7683",
-    storageBucket: "mystore-c7683.firebasestorage.app",
-    messagingSenderId: "703094569880",
-    appId: "1:703094569880:web:72b231ae83e628cb1849ed",
-    measurementId: "G-QRX4BYC9K3"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>

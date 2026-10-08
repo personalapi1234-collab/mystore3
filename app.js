@@ -1,7 +1,7 @@
-const STORE="YOURSTORE",CUR="₹"; // 1) Change your store name here
+const CUR="₹";
 // 2) Sample products. Later these will come from Firebase.
 // To use a real photo, add img:"your-cloudinary-link" to a product.
-const P=[
+let P=[
 {id:1,n:"Checked flannel shirt",c:"shirts",p:1999,k:"#7a1f2b"},
 {id:2,n:"Striped oxford shirt",c:"shirts",p:1799,k:"#1f3a66"},
 {id:3,n:"Linen resort shirt",c:"shirts",p:1599,k:"#c9b79c"},
@@ -22,8 +22,11 @@ const cnt=()=>rd().reduce((a,i)=>a+i.q,0);
 const money=n=>CUR+n.toLocaleString("en-IN");
 const img=p=>p.img?`<img class="ph" src="${p.img}" alt="${p.n}">`:`<div class="ph" style="background:${p.k}"></div>`;
 const card=p=>`<a class="card" href="product.html?id=${p.id}">${img(p)}<h3>${p.n}</h3><p>${money(p.p)}</p></a>`;
-function add(id,s){const c=rd(),f=c.find(i=>i.id==id&&i.s==s);f?f.q++:c.push({id:+id,s:s,q:1});wr(c);head()}
+function add(id,s){const c=rd(),f=c.find(i=>i.id==id&&i.s==s);f?f.q++:c.push({id:id,s:s,q:1});wr(c);head()}
 function head(){const cur=new URLSearchParams(location.search).get("c");
 $("#hd").innerHTML=`<div class="promo">Free delivery on orders over ${money(1999)}</div><header><div class="bar"><a class="logo" href="index.html">${STORE}</a><nav>${[["all","New in"],...Object.entries(C)].map(([k,v])=>`<a href="collection.html?c=${k}" class="${cur==k?"on":""}">${v}</a>`).join("")}</nav><a class="bag" href="cart.html">Bag (${cnt()})</a></div></header>`}
 function foot(){$("#ft").innerHTML=`<footer>© ${new Date().getFullYear()} ${STORE}</footer>`}
+const FB=typeof firebase!=="undefined"&&FIREBASE.apiKey;let db,auth;
+if(FB){firebase.initializeApp(FIREBASE);db=firebase.firestore();auth=firebase.auth()}
+const ready=(async()=>{if(!db)return;try{const s=await db.collection("products").get();P=s.docs.map(d=>({id:d.id,k:"#ddd",...d.data()}))}catch(e){console.log(e)}})();
 head();foot();document.title=STORE+" – "+document.title;

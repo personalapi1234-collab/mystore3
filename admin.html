@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><link rel="stylesheet" href="style.css">
+<style>input,select{height:36px;padding:0 8px;border:1px solid #ccc;margin:0 6px 6px 0;font:inherit}.n{width:200px}.pp{width:90px}button{height:36px;padding:0 14px;border:1px solid #111;background:#fff;cursor:pointer}#in,#add{background:#111;color:#fff}</style></head>
+<body>
+<div id="hd"></div>
+<div class="wrap">
+<h1 style="font-size:22px;margin-bottom:16px">Admin</h1>
+<p class="mut" id="msg"></p>
+<div id="lg"><input id="em" type="email" placeholder="Admin email"> <input id="pw" type="password" placeholder="Password"> <button id="in">Sign in</button></div>
+<div id="ad" style="display:none">
+<p><button id="so">Sign out</button></p>
+<h2 class="sec" style="padding:24px 0 12px">Add product</h2>
+<input id="nn" placeholder="Product name"> <input id="np" type="number" placeholder="Price"> <select id="nc"></select><br>
+<input id="ph" type="file" accept="image/*"> <button id="add">Add product</button>
+<h2 class="sec" style="padding:32px 0 8px">Your products</h2>
+<div id="ls"></div>
+</div></div>
+<div id="ft"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+const out=m=>$("#msg").textContent=m;
+const esc=s=>String(s).replace(/"/g,"&quot;");
+const opts=v=>Object.entries(C).map(([k,n])=>`<option value="${k}" ${k==v?"selected":""}>${n}</option>`).join("");
+function show(u){const ok=u&&u.email==ADMIN_EMAIL;
+$("#lg").style.display=u?"none":"block";$("#ad").style.display=ok?"block":"none";
+if(u&&!ok)out("This account is not the admin.");
+if(ok){$("#nc").innerHTML=opts();load()}}
+auth.onAuthStateChanged(show);
+$("#in").onclick=()=>auth.signInWithEmailAndPassword($("#em").value,$("#pw").value).then(()=>out("")).catch(e=>out(e.message));
+$("#so").onclick=()=>auth.signOut();
+async function load(){try{const s=await db.collection("products").orderBy("t","desc").get();
+$("#ls").innerHTML=s.docs.map(d=>{const p=d.data();return `<div class="row" data-id="${d.id}">${img({...p,k:"#ddd"})}<div><input class="n" value="${esc(p.n)}"> <input class="pp" type="number" value="${p.p}"> <select class="cc">${opts(p.c)}</select> <button data-a="s">Save</button> <button data-a="d">Delete</button></div></div>`}).join("")||"<p>No products yet.</p>"}catch(e){out(e.message)}}
+$("#add").onclick=async()=>{const f=$("#ph").files[0],n=$("#nn").value.trim(),pr=+$("#np").value;
+if(!n||!pr||!f)return out("Please enter a name, a price and choose a photo.");
+out("Uploading photo...");
+try{const fd=new FormData();fd.append("file",f);fd.append("upload_preset",UPLOAD_PRESET);
+const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:"POST",body:fd});const j=await r.json();
+if(!j.secure_url)throw new Error(j.error?j.error.message:"Photo upload failed");
+await db.collection("products").add({n:n,p:pr,c:$("#nc").value,img:j.secure_url,t:Date.now()});
+out("Product added.");$("#nn").value="";$("#np").value="";$("#ph").value="";load()}catch(e){out(e.message)}};
+$("#ls").onclick=async e=>{const b=e.target,a=b.dataset.a;if(!a)return;const r=b.closest(".row"),id=r.dataset.id;
+try{if(a=="d"){if(!confirm("Delete this product?"))return;await db.collection("products").doc(id).delete()}
+else await db.collection("products").doc(id).update({n:r.querySelector(".n").value,p:+r.querySelector(".pp").value,c:r.querySelector(".cc").value});
+out("Done.");load()}catch(x){out(x.message)}};
+</script>
+</body></html>

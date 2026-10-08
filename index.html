@@ -8,32 +8,10 @@
 <h2 class="sec">New in</h2>
 <div class="grid" id="gr"></div>
 <div id="ft"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="config.js"></script>
 <script src="app.js"></script>
-<script>
-$("#tiles").innerHTML=["shirts","jeans"].map(k=>{const p=P.find(x=>x.c==k);return `<a class="tile" href="collection.html?c=${k}">${img(p)}<div class="cap">${C[k]}<br><small>Explore</small></div></a>`}).join("");
+<script>ready.then(()=>{
+$("#tiles").innerHTML=["shirts","jeans"].map(k=>{const p=P.find(x=>x.c==k);if(!p)return"";return `<a class="tile" href="collection.html?c=${k}">${img(p)}<div class="cap">${C[k]}<br><small>Explore</small></div></a>`}).join("");
 $("#gr").innerHTML=P.slice(0,6).map(card).join("");
-</script>
+});</script>
 </body></html>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBa8pF742T-Xb3yMBnfsZd7LrT319SdowQ",
-    authDomain: "mystore-c7683.firebaseapp.com",
-    projectId: "mystore-c7683",
-    storageBucket: "mystore-c7683.firebasestorage.app",
-    messagingSenderId: "703094569880",
-    appId: "1:703094569880:web:72b231ae83e628cb1849ed",
-    measurementId: "G-QRX4BYC9K3"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
