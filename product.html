@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Product</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div id="hd"></div>
+<div class="pd" id="pd"></div>
+<div id="ft"></div>
+<script src="app.js"></script>
+<script>
+const p=P.find(x=>x.id==new URLSearchParams(location.search).get("id"))||P[0];let s="M";
+document.title=STORE+" – "+p.n;
+$("#pd").innerHTML=`${img(p)}<div><h1>${p.n}</h1><p class="pr">${money(p.p)}</p><p class="mut">Size</p><div class="sz">${["S","M","L","XL"].map(z=>`<button class="${z==s?"on":""}">${z}</button>`).join("")}</div><button class="btn" id="a">Add to bag</button><p class="mut" id="m"></p></div>`;
+$(".sz").onclick=e=>{if(e.target.tagName=="BUTTON"){s=e.target.textContent;document.querySelectorAll(".sz button").forEach(b=>b.classList.toggle("on",b==e.target))}};
+$("#a").onclick=()=>{add(p.id,s);$("#m").textContent="Added to bag, size "+s}
+</script>
+</body></html>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBa8pF742T-Xb3yMBnfsZd7LrT319SdowQ",
+    authDomain: "mystore-c7683.firebaseapp.com",
+    projectId: "mystore-c7683",
+    storageBucket: "mystore-c7683.firebasestorage.app",
+    messagingSenderId: "703094569880",
+    appId: "1:703094569880:web:72b231ae83e628cb1849ed",
+    measurementId: "G-QRX4BYC9K3"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
