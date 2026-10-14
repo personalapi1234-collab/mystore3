@@ -1,7 +1,7 @@
 // ===== EDIT THESE 4 LINES =====
 const STORE = "webverse";               // 1) 
 const CLOUD_NAME = "vcy5oxoo";    // 2) Cloudinary dashboard > Cloud name
-const UPLOAD_PRESET = "aadit";// 3) your unsigned upload preset name
+const UPLOAD_PRESET = "ml_default";// 3) your unsigned upload preset name
 const ADMIN_EMAIL = "personalapi1234@gmail.com";    // 4) the email you added in Firebase Authentication
 // ===============================
 
